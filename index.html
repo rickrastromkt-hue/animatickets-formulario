@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Formulário do Produtor – Animatickets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800&display=swap" rel="stylesheet">
+  <style>
+    /* ─── RESET ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand:        #f95607;
+      --brand-dark:   #d84a05;
+      --brand-light:  #fff3ee;
+      --brand-glow:   rgba(249,86,7,.18);
+      --text:         #1a202c;
+      --text-muted:   #718096;
+      --border:       #e2e8f0;
+      --bg:           #f4f6f9;
+      --card:         #ffffff;
+      --radius:       14px;
+      --shadow:       0 6px 28px rgba(0,0,0,.08);
+      --shadow-sm:    0 2px 10px rgba(0,0,0,.06);
+      --error:        #e53e3e;
+      --success:      #38a169;
+    }
+
+    html, body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────────────── */
+    .header {
+      background: var(--brand);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 3px 16px rgba(249,86,7,.35);
+    }
+
+    .header-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 24px;
+      min-height: 72px;
+    }
+
+    .header-logo {
+      max-height: 46px;
+      max-width: 210px;
+      object-fit: contain;
+    }
+
+    /* ─── PROGRESS ───────────────────────────────────────────── */
+    .progress-wrapper {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px 14px;
+      display: none;
+    }
+    .progress-wrapper.show { display: block; }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .progress-label { font-size: 13px; font-weight: 600; color: var(--brand); }
+    .progress-count { font-size: 12px; color: var(--text-muted); }
+
+    .progress-track {
+      height: 5px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--brand), #ff8c3a);
+      border-radius: 99px;
+      transition: width .55s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ─── LAYOUT ─────────────────────────────────────────────── */
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 28px 16px 60px;
+    }
+
+    /* ─── STEPS ──────────────────────────────────────────────── */
+    .step { display: none; }
+    .step.active {
+      display: block;
+      animation: fadeUp .38s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── INTRO FULL-SCREEN ──────────────────────────────────── */
+    #step-0 {
+      position: fixed !important;
+      inset: 0;
+      z-index: 300;
+      background: var(--brand);
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      animation: none !important;
+      transition: transform .65s cubic-bezier(.77,0,.175,1);
+      overflow: hidden;
+    }
+    #step-0.slide-away {
+      transform: translateX(-100%);
+      pointer-events: none;
+    }
+
+    .intro-wrap {
+      max-width: 640px;
+      width: 100%;
+      padding: 0 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .intro-heading {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+      letter-spacing: -.3px;
+      margin-bottom: 12px;
+    }
+
+    .intro-sub {
+      font-size: clamp(28px, 4vw, 42px);
+      color: #fff;
+      line-height: 1.3;
+      font-weight: 700;
+      letter-spacing: -.3px;
+      max-width: 620px;
+      margin-bottom: 52px;
+      min-height: 1.3em;
+    }
+
+    .i-cursor {
+      display: inline-block;
+      width: 2px;
+      height: .85em;
+      background: rgba(255,255,255,.75);
+      margin-left: 2px;
+      vertical-align: text-bottom;
+      animation: blink .55s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .intro-logo-block {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .intro-logo-block.show { opacity: 1; transform: translateY(0); }
+
+    .intro-logo-img {
+      max-height: 60px;
+      max-width: 240px;
+      object-fit: contain;
+      filter: brightness(0) invert(1); /* deixa o logo branco */
+    }
+
+    .btn-iniciar {
+      text-decoration: none;
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      height: 56px;
+      padding: 0 36px;
+      background: #fff;
+      color: var(--brand);
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: none;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .4s ease, transform .4s ease;
+      -webkit-tap-highlight-color: transparent;
+      pointer-events: none;
+      margin-bottom: 48px;
+    }
+    .btn-iniciar.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .btn-iniciar:hover { opacity: .88; transform: translateY(-1px); }
+    .btn-iniciar:active { transform: translateY(0); opacity: 1; }
+
+    /* ─── SECTION HEADER ─────────────────────────────────────── */
+    .section-head { margin-bottom: 22px; }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -.2px;
+    }
+    .s-icon {
+      width: 38px; height: 38px;
+      background: var(--brand);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px var(--brand-glow);
+    }
+    .section-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 5px;
+      padding-left: 50px;
+    }
+
+    /* ─── CARD ───────────────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 22px 22px 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+    .card-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1.5px solid var(--brand-light);
+    }
+
+    /* ─── FORM ───────────────────────────────────────────────── */
+    .row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .row:last-child { margin-bottom: 0; }
+
+    .fg { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; }
+    .fg.f1  { flex: 1; }
+    .fg.f2  { flex: 2; }
+    .fg.f3  { flex: 3; }
+    .fg.w80 { flex: 0 0 80px; }
+
+    label {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .req { color: var(--brand); }
+
+    input[type="text"],
+    input[type="email"],
+    select {
+      width: 100%;
+      height: 48px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      padding: 0 13px;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      transition: border-color .18s, box-shadow .18s, background .18s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px var(--brand-glow);
+    }
+    input:disabled {
+      background: #f0f0f0;
+      color: #aaa;
+      cursor: not-allowed;
+      border-color: #e2e2e2;
+    }
+    input.filled {
+      background: #fffaf7;
+      border-color: #f9c49c;
+    }
+    input.err, select.err {
+      border-color: var(--error);
+      box-shadow: 0 0 0 3px rgba(229,62,62,.12);
+    }
+
+    select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath fill='%23718096' d='M5 7 0 0h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 13px center;
+      padding-right: 34px;
+    }
+
+    /* CEP wrapper */
+    .cep-wrap { position: relative; }
+    .cep-spin {
+      position: absolute;
+      right: 12px; top: 50%;
+      transform: translateY(-50%);
+      width: 17px; height: 17px;
+      border: 2px solid var(--border);
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+      display: none;
+    }
+    .cep-spin.on { display: block; }
+    @keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
+
+    /* Checkbox */
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 48px;
+    }
+    .check-row input[type="checkbox"] {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+      accent-color: var(--brand);
+      cursor: pointer;
+    }
+    .check-row label { font-size: 14px; cursor: pointer; }
+
+    .err-msg { font-size: 11.5px; color: var(--error); margin-top: 2px; }
+
+    /* Divider */
+    .div { height: 1px; background: var(--border); margin: 16px 0; }
+
+    /* ─── BUTTONS ─────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      height: 52px;
+      padding: 0 26px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .btn-primary {
+      background: var(--brand);
+      color: #fff;
+      box-shadow: 0 4px 16px var(--brand-glow);
+    }
+    .btn-primary:hover { background: var(--brand-dark); transform: translateY(-1px); box-shadow: 0 7px 22px var(--brand-glow); }
+    .btn-primary:active { transform: translateY(0); box-shadow: 0 3px 8px var(--brand-glow); }
+    .btn-ghost {
+      background: #fff;
+      color: var(--text-muted);
+      border: 1.5px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--brand); color: var(--brand); }
+    .btn-lg { height: 56px; font-size: 16px; padding: 0 38px; border-radius: 12px; }
+    .btn-full { width: 100%; }
+
+    .nav {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .nav .btn-ghost { min-width: 120px; flex-shrink: 0; }
+    .nav .btn-primary { flex: 1; }
+
+    /* ─── RADIO GROUP ────────────────────────────────────────── */
+    .radio-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .radio-opt {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 48px;
+      padding: 0 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      transition: border-color .18s, background .18s, color .18s;
+      flex: 1;
+      min-width: 100px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .radio-opt input[type="radio"] {
+      width: 17px; height: 17px;
+      flex-shrink: 0;
+      accent-color: var(--brand);
+      cursor: pointer;
+    }
+    .radio-opt:has(input:checked) {
+      border-color: var(--brand);
+      background: var(--brand-light);
+      color: var(--brand);
+    }
+    .radio-opt.err-radio {
+      border-color: var(--error);
+      animation: shake .35s ease;
+    }
+
+    /* ─── FILE UPLOAD ─────────────────────────────────────────── */
+    input[type="file"] { display: none; }
+
+    .file-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 52px;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      background: #fafafa;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-muted);
+      transition: border-color .18s, background .18s, color .18s;
+      word-break: break-all;
+      line-height: 1.3;
+    }
+    .file-label:hover {
+      border-color: var(--brand);
+      background: var(--brand-light);
+      color: var(--brand);
+    }
+    .file-label.has-file {
+      border-color: var(--success);
+      background: #f0fff4;
+      color: var(--success);
+    }
+    .file-label.err {
+      border-color: var(--error);
+      animation: shake .35s ease;
+    }
+    .file-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* ─── CHECK OPT (checkbox estilo botão) ──────────────────── */
+    .check-opt {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 48px;
+      padding: 0 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: #fafafa;
+      transition: border-color .18s, background .18s, color .18s;
+      width: 100%;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .check-opt input[type="checkbox"] {
+      width: 17px; height: 17px;
+      flex-shrink: 0;
+      accent-color: var(--brand);
+      cursor: pointer;
+    }
+    .check-opt:has(input:checked) {
+      border-color: var(--brand);
+      background: var(--brand-light);
+      color: var(--brand);
+    }
+
+    /* ─── INFO BOX ────────────────────────────────────────────── */
+    .info-box {
+      background: #f0f7ff;
+      border: 1px solid #bee3f8;
+      border-radius: 9px;
+      padding: 11px 14px;
+      font-size: 12.5px;
+      color: #2c5282;
+      margin-top: 2px;
+      line-height: 1.5;
+    }
+
+    /* ─── SUCCESS (full-screen, igual à intro) ────────────────── */
+    #step-8.active {
+      position: fixed !important;
+      inset: 0;
+      z-index: 300;
+      background: var(--brand);
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      animation: slideFromRight .65s cubic-bezier(.77,0,.175,1) forwards !important;
+      overflow: hidden;
+    }
+    @keyframes slideFromRight {
+      from { transform: translateX(100%); }
+      to   { transform: translateX(0); }
+    }
+
+    .succ-icon {
+      width: 72px; height: 72px;
+      border: 2.5px solid rgba(255,255,255,.55);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 28px;
+      opacity: 0;
+      transform: scale(.5);
+      transition: opacity .4s ease, transform .45s cubic-bezier(.175,.885,.32,1.275);
+    }
+    .succ-icon.show { opacity: 1; transform: scale(1); }
+
+    /* ─── TOAST DE VALIDAÇÃO ─────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: #1a202c;
+      color: #fff;
+      padding: 13px 26px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity .22s, transform .22s;
+      z-index: 500;
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ─── CAMPO COM ERRO ─────────────────────────────────────── */
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%     { transform: translateX(-5px); }
+      40%     { transform: translateX(5px); }
+      60%     { transform: translateX(-3px); }
+      80%     { transform: translateX(3px); }
+    }
+    input.err, select.err { animation: shake .35s ease; }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      .page { padding: 18px 12px 48px; }
+      .card { padding: 16px 14px 18px; }
+      .success-card { padding: 36px 20px 32px; }
+      .intro-wrap { padding: 0 28px; }
+      .row { flex-wrap: wrap; }
+      .fg.f1,.fg.f2,.fg.f3 { flex: 1 1 100%; }
+      .fg.w80 { flex: 0 0 78px; }
+    }
+
+    @keyframes spinRound { to { transform: rotate(360deg); } }
+
+    @media print {
+      #step-0 { display: none !important; }
+      .header { position: static; }
+      .progress-wrapper { display: none !important; }
+      .nav { display: none !important; }
+      .step { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════════════ -->
+<header class="header">
+  <div class="header-inner">
+    <img src="logo-anima.png" alt="Animatickets" class="header-logo">
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════
+     PROGRESS BAR
+══════════════════════════════════════════════════════════ -->
+<div class="progress-wrapper" id="progressWrapper">
+  <div class="progress-meta">
+    <span class="progress-label" id="pLabel"></span>
+    <span class="progress-count" id="pCount"></span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="pFill" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     CONTEÚDO
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <!-- ───────────────────────────────────────────────────────
+       STEP 0 — INTRO (full-screen overlay)
+  ─────────────────────────────────────────────────────────── -->
+  <div class="step active" id="step-0">
+    <div class="intro-wrap">
+      <h1 class="intro-heading" id="intro-h1"></h1>
+      <p  class="intro-sub"     id="intro-sub"></p>
+
+      <button class="btn-iniciar" id="btn-iniciar" onclick="startForm()">
+        Iniciar Formulário
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────────────────
+       STEP 1 — DADOS DO EVENTO
+  ─────────────────────────────────────────────────────────── -->
+  <div class="step" id="step-1">
+    <div class="section-head">
+      <div class="section-title">
+        <div class="s-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+        Dados do Evento
+      </div>
+      <p class="section-sub">Informações sobre o evento a ser realizado</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Datas e Horários</div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Data do Evento <span class="req">*</span></label>
+          <input type="text" id="ev-data" placeholder="DD/MM/AAAA" maxlength="10" oninput="maskDate(this)">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Data de Abertura de Vendas <span class="req">*</span></label>
+          <input type="text" id="ev-vendas" placeholder="DD/MM/AAAA" maxlength="10" oninput="maskDate(this)">
+        </div>
+        <div class="fg f1">
+          <label>Horário <span class="req">*</span></label>
+          <input type="text" id="ev-horario" placeholder="HH:MM" maxlength="5" oninput="maskTime(this)">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Identificação e Local</div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Nome do Evento <span class="req">*</span></label>
+          <input type="text" id="ev-nome" placeholder="Nome completo do evento">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Local do Evento <span class="req">*</span></label>
+          <input type="text" id="ev-local" placeholder="Nome do local, venue, espaço...">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg w80">
+          <label>UF <span class="req">*</span></label>
+          <select id="ev-uf" onchange="fetchCitiesByUF(this.value)">
+            <option value="">UF</option>
+            <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+            <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+            <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+            <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+            <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+            <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+            <option>SP</option><option>SE</option><option>TO</option>
+          </select>
+        </div>
+        <div class="fg f2">
+          <label>Cidade <span class="req">*</span></label>
+          <select id="ev-cidade" disabled>
+            <option value="">Selecione o UF primeiro</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Endereço do Evento</div>
+      <div id="addr-evento"></div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-primary btn-full" onclick="advance(1)">
+        Próximo
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────────────────
+       STEP 2 — DADOS DO CONTRATANTE
+  ─────────────────────────────────────────────────────────── -->
+  <div class="step" id="step-2">
+    <div class="section-head">
+      <div class="section-title">
+        <div class="s-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        Dados do Contratante
+      </div>
+      <p class="section-sub">Informações jurídicas da empresa ou produtor contratante</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Identificação</div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Razão Social <span class="req">*</span></label>
+          <input type="text" id="co-razao" placeholder="Razão social completa">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Nome Fantasia</label>
+          <input type="text" id="co-fantasia" placeholder="Nome fantasia (se houver)">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>CNPJ <span class="req">*</span></label>
+          <input type="text" id="co-cnpj" placeholder="00.000.000/0000-00" maxlength="18" oninput="maskCNPJ(this)">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>I.E. – Inscrição Estadual</label>
+          <input type="text" id="co-ie" placeholder="Inscrição Estadual">
+        </div>
+        <div class="fg f1">
+          <label>I.M. – Inscrição Municipal</label>
+          <input type="text" id="co-im" placeholder="Inscrição Municipal">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Data de Fundação <span class="req">*</span></label>
+          <input type="text" id="co-fundacao" placeholder="DD/MM/AAAA" maxlength="10" oninput="maskDate(this)">
+        </div>
+        <div class="fg f1">
+          <label>Telefone <span class="req">*</span></label>
+          <input type="text" id="co-tel" placeholder="(00) 00000-0000" maxlength="15" oninput="maskPhone(this)">
+        </div>
+        <div class="fg f1">
+          <label>Celular</label>
+          <input type="text" id="co-cel" placeholder="(00) 00000-0000" maxlength="15" oninput="maskPhone(this)">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Contato da Empresa</div>
+      <div class="row">
+        <div class="fg f1">
+          <label>E-mail <span class="req">*</span></label>
+          <input type="email" id="co-email" placeholder="contato@empresa.com.br">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f2">
+          <label>Pessoa de Contato <span class="req">*</span></label>
+          <input type="text" id="co-contato" placeholder="Nome do responsável pelo contato">
+        </div>
+        <div class="fg f1">
+          <label>Função</label>
+          <input type="text" id="co-funcao" placeholder="Diretor, Gestor...">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Endereço do Contratante</div>
+      <div id="addr-contratante"></div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="back(2)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Anterior
+      </button>
+      <button class="btn btn-primary" onclick="advance(2)">
+        Próximo
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────────────────
+       STEP 3 — REPRESENTANTE LEGAL + CONTATOS
+  ─────────────────────────────────────────────────────────── -->
+  <div class="step" id="step-3">
+    <div class="section-head">
+      <div class="section-title">
+        <div class="s-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        Representante Legal
+      </div>
+      <p class="section-sub">Dados pessoais e contato do representante legal da empresa</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Identificação do Representante</div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Nome Completo <span class="req">*</span></label>
+          <input type="text" id="rl-nome" placeholder="Nome completo">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>CPF <span class="req">*</span></label>
+          <input type="text" id="rl-cpf" placeholder="000.000.000-00" maxlength="14" oninput="maskCPF(this)">
+        </div>
+        <div class="fg f1">
+          <label>RG <span class="req">*</span></label>
+          <input type="text" id="rl-rg" placeholder="RG">
+        </div>
+        <div class="fg f1">
+          <label>Órgão Expedidor <span class="req">*</span></label>
+          <input type="text" id="rl-orgao" placeholder="SSP/UF, DETRAN...">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Data de Nascimento <span class="req">*</span></label>
+          <input type="text" id="rl-nasc" placeholder="DD/MM/AAAA" maxlength="10" oninput="maskDate(this)">
+        </div>
+        <div class="fg f1">
+          <label>Estado Civil <span class="req">*</span></label>
+          <select id="rl-civil">
+            <option value="">Selecione</option>
+            <option>Solteiro(a)</option>
+            <option>Casado(a)</option>
+            <option>Divorciado(a)</option>
+            <option>Viúvo(a)</option>
+            <option>União Estável</option>
+            <option>Separado(a)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Endereço do Representante</div>
+      <div id="addr-representante"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Contatos do Representante Legal</div>
+      <div class="row">
+        <div class="fg f1">
+          <label>E-mail <span class="req">*</span></label>
+          <input type="email" id="rl-email" placeholder="email@exemplo.com">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Telefone <span class="req">*</span></label>
+          <input type="text" id="rl-tel" placeholder="(00) 00000-0000" maxlength="15" oninput="maskPhone(this)">
+        </div>
+        <div class="fg f1">
+          <label>Celular</label>
+          <input type="text" id="rl-cel" placeholder="(00) 00000-0000" maxlength="15" oninput="maskPhone(this)">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Responsabilidade e Acesso</div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Assina pela empresa? <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-opt">
+              <input type="radio" name="rl-assina" value="sim" onchange="setRadioVal('rl-assina-val',this.value)"> Sim
+            </label>
+            <label class="radio-opt">
+              <input type="radio" name="rl-assina" value="nao" onchange="setRadioVal('rl-assina-val',this.value)"> Não
+            </label>
+          </div>
+          <input type="hidden" id="rl-assina-val">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Terá usuário de acesso ao sistema? <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-opt">
+              <input type="radio" name="rl-usuario" value="sim" onchange="setRadioVal('rl-usuario-val',this.value);toggleGestor()"> Sim
+            </label>
+            <label class="radio-opt">
+              <input type="radio" name="rl-usuario" value="nao" onchange="setRadioVal('rl-usuario-val',this.value);toggleGestor()"> Não
+            </label>
+          </div>
+          <input type="hidden" id="rl-usuario-val">
+        </div>
+      </div>
+      <div class="row" id="gestor-row" style="display:none">
+        <div class="fg f1">
+          <label>Este usuário será gestor (administrador)? <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-opt">
+              <input type="radio" name="rl-gestor" value="sim" onchange="setRadioVal('rl-gestor-val',this.value)"> Sim
+            </label>
+            <label class="radio-opt">
+              <input type="radio" name="rl-gestor" value="nao" onchange="setRadioVal('rl-gestor-val',this.value)"> Não
+            </label>
+          </div>
+          <input type="hidden" id="rl-gestor-val">
+        </div>
+      </div>
+      <p class="info-box" style="margin-top:10px">
+        O representante legal receberá um e-mail automaticamente para criar o usuário após a conclusão do cadastro.
+      </p>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="back(3)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Anterior
+      </button>
+      <button class="btn btn-primary" onclick="advance(3)">
+        Próximo
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────────────────
+       STEP 4 — RESPONSÁVEL SOLIDÁRIO
+  ─────────────────────────────────────────────────────────── -->
+  <div class="step" id="step-4">
+    <div class="section-head">
+      <div class="section-title">
+        <div class="s-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+        Responsável Solidário
+      </div>
+      <p class="section-sub">Dados do responsável solidário pelo contrato</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Identificação</div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Nome Completo <span class="req">*</span></label>
+          <input type="text" id="rs-nome" placeholder="Nome completo">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>CPF <span class="req">*</span></label>
+          <input type="text" id="rs-cpf" placeholder="000.000.000-00" maxlength="14" oninput="maskCPF(this)">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Endereço</div>
+      <div id="addr-solidario"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Contato</div>
+      <div class="row">
+        <div class="fg f1">
+          <label>E-mail <span class="req">*</span></label>
+          <input type="email" id="rs-email" placeholder="email@exemplo.com">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Telefone <span class="req">*</span></label>
+          <input type="text" id="rs-tel" placeholder="(00) 00000-0000" maxlength="15" oninput="maskPhone(this)">
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="back(4)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Anterior
+      </button>
+      <button class="btn btn-primary" onclick="advance(4)">
+        Próximo
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────────────────
+       STEP 5 — PRODUTOR LOCAL
+  ─────────────────────────────────────────────────────────── -->
+  <div class="step" id="step-5">
+    <div class="section-head">
+      <div class="section-title">
+        <div class="s-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 013 3v7a3 3 0 01-6 0V5a3 3 0 013-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v3M8 22h8"/></svg></div>
+        Produtor Local
+      </div>
+      <p class="section-sub">Contatos do produtor local responsável pelo evento</p>
+    </div>
+
+    <div class="card">
+      <div class="row" style="margin-bottom:0">
+        <div class="fg f1">
+          <label class="check-opt">
+            <input type="checkbox" id="pl-nenhum" onchange="toggleSemProdutor(this.checked)">
+            Este evento não possui Produtor Local
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div id="pl-fields">
+      <div class="card">
+        <div class="card-label">Contatos</div>
+        <div class="row">
+          <div class="fg f1">
+            <label>Telefone <span class="req">*</span></label>
+            <input type="text" id="pl-tel" placeholder="(00) 00000-0000" maxlength="15" oninput="maskPhone(this)">
+          </div>
+        </div>
+        <div class="row">
+          <div class="fg f1">
+            <label>E-mail <span class="req">*</span></label>
+            <input type="email" id="pl-email" placeholder="email@exemplo.com">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="back(5)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Anterior
+      </button>
+      <button class="btn btn-primary" onclick="advance(5)">
+        Próximo
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────────────────
+       STEP 6 — DADOS BANCÁRIOS
+  ─────────────────────────────────────────────────────────── -->
+  <div class="step" id="step-6">
+    <div class="section-head">
+      <div class="section-title">
+        <div class="s-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></div>
+        Dados Bancários
+      </div>
+      <p class="section-sub">Informações para repasse financeiro dos ingressos</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Titular da Conta</div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Tipo de Conta <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-opt">
+              <input type="radio" name="bk-tipo" value="corrente" onchange="setRadioVal('bk-tipo-val',this.value)"> Conta Corrente
+            </label>
+            <label class="radio-opt">
+              <input type="radio" name="bk-tipo" value="poupanca" onchange="setRadioVal('bk-tipo-val',this.value)"> Conta Poupança
+            </label>
+          </div>
+          <input type="hidden" id="bk-tipo-val">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Favorecido <span class="req">*</span></label>
+          <input type="text" id="bk-fav" placeholder="Nome completo do favorecido">
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>CPF / CNPJ <span class="req">*</span></label>
+          <input type="text" id="bk-doc" placeholder="CPF ou CNPJ" maxlength="18" oninput="maskCPFCNPJ(this)">
+        </div>
+      </div>
+
+      <div class="div"></div>
+      <div class="card-label" style="border:none;margin-bottom:14px;padding-bottom:0">Conta Bancária</div>
+
+      <div class="row">
+        <div class="fg f1">
+          <label>Banco <span class="req">*</span></label>
+          <select id="bk-banco">
+            <option value="">Selecione o banco</option>
+            <option value="001 - Banco do Brasil">001 – Banco do Brasil</option>
+            <option value="003 - Banco da Amazônia">003 – Banco da Amazônia</option>
+            <option value="004 - Banco do Nordeste">004 – Banco do Nordeste</option>
+            <option value="021 - Banestes">021 – Banestes</option>
+            <option value="025 - Banco Alfa">025 – Banco Alfa</option>
+            <option value="033 - Santander">033 – Santander</option>
+            <option value="036 - Banco BBI">036 – Banco BBI</option>
+            <option value="037 - Banpará">037 – Banpará</option>
+            <option value="041 - Banrisul">041 – Banrisul</option>
+            <option value="047 - Banese">047 – Banese</option>
+            <option value="069 - Banco Crefisa">069 – Banco Crefisa</option>
+            <option value="070 - BRB">070 – BRB</option>
+            <option value="077 - Banco Inter">077 – Banco Inter</option>
+            <option value="084 - UniPrime">084 – UniPrime</option>
+            <option value="085 - Ailos / CECRED">085 – Ailos / CECRED</option>
+            <option value="099 - Uniprime Central">099 – Uniprime Central</option>
+            <option value="104 - Caixa Econômica Federal">104 – Caixa Econômica Federal</option>
+            <option value="121 - Banco Agibank">121 – Banco Agibank</option>
+            <option value="136 - Unicred">136 – Unicred</option>
+            <option value="197 - Stone">197 – Stone</option>
+            <option value="208 - BTG Pactual">208 – BTG Pactual</option>
+            <option value="212 - Banco Original">212 – Banco Original</option>
+            <option value="218 - BS2">218 – BS2</option>
+            <option value="237 - Bradesco">237 – Bradesco</option>
+            <option value="243 - Banco Master">243 – Banco Master</option>
+            <option value="260 - Nubank">260 – Nubank</option>
+            <option value="274 - Money Plus">274 – Money Plus</option>
+            <option value="290 - PagBank / PagSeguro">290 – PagBank / PagSeguro</option>
+            <option value="299 - Banco Sorocred">299 – Banco Sorocred</option>
+            <option value="318 - Banco BMG">318 – Banco BMG</option>
+            <option value="323 - Mercado Pago">323 – Mercado Pago</option>
+            <option value="336 - C6 Bank">336 – C6 Bank</option>
+            <option value="341 - Itaú">341 – Itaú</option>
+            <option value="380 - PicPay">380 – PicPay</option>
+            <option value="383 - Ebanx">383 – Ebanx</option>
+            <option value="389 - Banco Mercantil">389 – Banco Mercantil</option>
+            <option value="394 - Banco Bradesco Financiamentos">394 – Bradesco Financiamentos</option>
+            <option value="403 - Cora">403 – Cora</option>
+            <option value="422 - Banco Safra">422 – Banco Safra</option>
+            <option value="461 - Asaas">461 – Asaas</option>
+            <option value="473 - Banco Caixa Geral">473 – Banco Caixa Geral</option>
+            <option value="505 - Credit Suisse">505 – Credit Suisse</option>
+            <option value="533 - SFT">533 – SFT</option>
+            <option value="623 - Banco Pan">623 – Banco Pan</option>
+            <option value="633 - Banco Rendimento">633 – Banco Rendimento</option>
+            <option value="637 - Banco Sofisa">637 – Banco Sofisa</option>
+            <option value="655 - Votorantim">655 – Votorantim</option>
+            <option value="707 - Daycoval">707 – Daycoval</option>
+            <option value="735 - Neon">735 – Neon</option>
+            <option value="741 - Banco Ribeirão Preto">741 – Banco Ribeirão Preto</option>
+            <option value="745 - Citibank">745 – Citibank</option>
+            <option value="748 - Sicredi">748 – Sicredi</option>
+            <option value="756 - Sicoob">756 – Sicoob</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="fg f1">
+          <label>Agência <span class="req">*</span></label>
+          <input type="text" id="bk-ag" placeholder="0000">
+        </div>
+        <div class="fg f1">
+          <label>Conta <span class="req">*</span></label>
+          <input type="text" id="bk-conta" placeholder="00000000-0">
+        </div>
+      </div>
+
+      <div class="div"></div>
+      <div class="card-label" style="border:none;margin-bottom:14px;padding-bottom:0">PIX</div>
+
+      <div class="row">
+        <div class="fg f1">
+          <label>Chave PIX</label>
+          <input type="text" id="bk-pix" placeholder="CPF, CNPJ, e-mail, telefone ou chave aleatória">
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="back(6)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Anterior
+      </button>
+      <button class="btn btn-primary" onclick="advance(6)">
+        Próximo
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────────────────
+       STEP 7 — DOCUMENTOS
+  ─────────────────────────────────────────────────────────── -->
+  <div class="step" id="step-7">
+    <div class="section-head">
+      <div class="section-title">
+        <div class="s-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+        Documentos
+      </div>
+      <p class="section-sub">Arquivos obrigatórios para análise do cadastro (PDF, JPG ou PNG · máx. 5 MB cada)</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Documentos da Empresa</div>
+
+      <div class="row">
+        <div class="fg f1">
+          <label>Comprovante de CNPJ <span class="req">*</span></label>
+          <label class="file-label" id="lbl-doc-cnpj" for="doc-cnpj">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span class="file-text">Selecionar arquivo</span>
+          </label>
+          <input type="file" id="doc-cnpj" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFile(this,'lbl-doc-cnpj')">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="fg f1">
+          <label>Contrato Social, ATA, Estatuto ou Certificado MEI <span class="req">*</span></label>
+          <label class="file-label" id="lbl-doc-contrato" for="doc-contrato">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span class="file-text">Selecionar arquivo</span>
+          </label>
+          <input type="file" id="doc-contrato" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFile(this,'lbl-doc-contrato')">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="fg f1">
+          <label>Inscrição Estadual</label>
+          <label class="file-label" id="lbl-doc-ie" for="doc-ie">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span class="file-text">Selecionar arquivo (opcional)</span>
+          </label>
+          <input type="file" id="doc-ie" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFile(this,'lbl-doc-ie')">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Documentos do Representante Legal</div>
+
+      <div class="row">
+        <div class="fg f1">
+          <label>RG ou CNH — Frente <span class="req">*</span></label>
+          <label class="file-label" id="lbl-doc-rl-frente" for="doc-rl-frente">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span class="file-text">Selecionar arquivo</span>
+          </label>
+          <input type="file" id="doc-rl-frente" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFile(this,'lbl-doc-rl-frente')">
+        </div>
+        <div class="fg f1">
+          <label>RG ou CNH — Verso <span class="req">*</span></label>
+          <label class="file-label" id="lbl-doc-rl-verso" for="doc-rl-verso">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span class="file-text">Selecionar arquivo</span>
+          </label>
+          <input type="file" id="doc-rl-verso" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFile(this,'lbl-doc-rl-verso')">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="fg f1">
+          <label>Comprovante de Residência <span class="req">*</span></label>
+          <label class="file-label" id="lbl-doc-rl-res" for="doc-rl-res">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span class="file-text">Selecionar arquivo</span>
+          </label>
+          <input type="file" id="doc-rl-res" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFile(this,'lbl-doc-rl-res')">
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="back(7)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Anterior
+      </button>
+      <button class="btn btn-primary" onclick="advance(7)">
+        Concluir e Enviar
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────────────────
+       STEP 8 — SUCESSO
+  ─────────────────────────────────────────────────────────── -->
+  <div class="step" id="step-8">
+    <div class="intro-wrap">
+      <div class="succ-icon" id="succ-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <h1 class="intro-heading" id="succ-h1"></h1>
+      <p  class="intro-sub"     id="succ-sub"></p>
+
+      <a class="btn-iniciar" id="succ-btn" href="guia-midia.pdf" download>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Logotipo / Guia de Mídia
+      </a>
+    </div>
+  </div>
+
+</div><!-- /.page -->
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<!-- ══════════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════ -->
+<script>
+/* ─── CONFIG ──────────────────────────────────────────────── */
+const TOTAL   = 7;
+const LABELS  = ['','Dados do Evento','Dados do Contratante','Representante Legal','Responsável Solidário','Produtor Local','Dados Bancários','Documentos'];
+
+let current = 0;
+
+/* ─── TYPEWRITER ──────────────────────────────────────────── */
+function typeText(el, text, speed) {
+  return new Promise(resolve => {
+    let i = 0;
+    const cursor = document.createElement('span');
+    cursor.className = 'i-cursor';
+    el.appendChild(cursor);
+    const iv = setInterval(() => {
+      if (i < text.length) {
+        cursor.insertAdjacentText('beforebegin', text[i++]);
+      } else {
+        clearInterval(iv);
+        cursor.remove();
+        resolve();
+      }
+    }, speed);
+  });
+}
+
+async function runTypewriter() {
+  const h1  = document.getElementById('intro-h1');
+  const sub = document.getElementById('intro-sub');
+  await typeText(h1, 'Olá, produtor!', 65);
+  await new Promise(r => setTimeout(r, 280));
+  await typeText(sub, 'Preencha o formulário para darmos andamento ao contrato.', 22);
+  await new Promise(r => setTimeout(r, 300));
+  document.getElementById('btn-iniciar').classList.add('show');
+}
+
+/* ─── SUCCESS TYPEWRITER ─────────────────────────────────── */
+async function runSuccessTypewriter() {
+  const icon = document.getElementById('succ-icon');
+  const h1   = document.getElementById('succ-h1');
+  const sub  = document.getElementById('succ-sub');
+  const btn  = document.getElementById('succ-btn');
+  /* reset caso o usuário volte (não aplicável aqui, mas por segurança) */
+  h1.textContent  = '';
+  sub.textContent = '';
+  icon.classList.remove('show');
+  btn.classList.remove('show');
+
+  await new Promise(r => setTimeout(r, 380)); /* aguarda slide entrar */
+  icon.classList.add('show');
+  await new Promise(r => setTimeout(r, 450));
+  await typeText(h1, 'Obrigado!', 75);
+  await new Promise(r => setTimeout(r, 220));
+  await typeText(sub, 'Recebemos suas informações.', 35);
+  await new Promise(r => setTimeout(r, 260));
+  btn.classList.add('show');
+}
+
+/* ─── START FORM (slide transition) ──────────────────────── */
+function startForm() {
+  const intro = document.getElementById('step-0');
+  intro.classList.add('slide-away');
+  intro.addEventListener('transitionend', () => {
+    intro.style.display = 'none';
+  }, { once: true });
+  goTo(1);
+}
+
+/* ─── ADDRESS BLOCKS ──────────────────────────────────────── */
+const addrSlots = [
+  { p: 'ea',   el: 'addr-evento'       },
+  { p: 'ca',   el: 'addr-contratante'  },
+  { p: 'ra',   el: 'addr-representante'},
+  { p: 'sa',   el: 'addr-solidario'    },
+];
+
+function buildAddr(p) {
+  return `
+    <div class="row">
+      <div class="fg f1">
+        <label>CEP <span class="req">*</span></label>
+        <div class="cep-wrap">
+          <input type="text" id="${p}-cep" placeholder="00000-000" maxlength="9"
+                 oninput="maskCEP(this)" onblur="fetchCEP('${p}')">
+          <div class="cep-spin" id="${p}-spin"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="fg f3">
+        <label>Logradouro <span class="req">*</span></label>
+        <input type="text" id="${p}-logradouro" placeholder="Rua, Avenida, Travessa...">
+      </div>
+      <div class="fg w80">
+        <label>UF</label>
+        <input type="text" id="${p}-uf" placeholder="UF" maxlength="2" style="text-transform:uppercase">
+      </div>
+    </div>
+    <div class="row">
+      <div class="fg f1">
+        <label>Número <span class="req">*</span></label>
+        <input type="text" id="${p}-num" placeholder="Número">
+      </div>
+      <div class="fg f1" style="justify-content:flex-end">
+        <label>&nbsp;</label>
+        <div class="check-row">
+          <input type="checkbox" id="${p}-sn" onchange="toggleSN('${p}')">
+          <label for="${p}-sn">Sem número</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="fg f1">
+        <label>Complemento</label>
+        <input type="text" id="${p}-comp" placeholder="Apto, Sala, Bloco...">
+      </div>
+    </div>
+    <div class="row">
+      <div class="fg f1">
+        <label>Bairro</label>
+        <input type="text" id="${p}-bairro" placeholder="Bairro">
+      </div>
+      <div class="fg f1">
+        <label>Cidade</label>
+        <input type="text" id="${p}-cidade" placeholder="Cidade">
+      </div>
+    </div>`;
+}
+
+addrSlots.forEach(({ p, el }) => {
+  const node = document.getElementById(el);
+  if (node) node.innerHTML = buildAddr(p);
+});
+
+/* ─── VALIDAÇÃO ───────────────────────────────────────────── */
+const REQUIRED = {
+  1: ['ev-data','ev-vendas','ev-horario','ev-nome','ev-local','ev-uf','ev-cidade',
+      'ea-cep','ea-logradouro','ea-num'],
+  2: ['co-razao','co-cnpj','co-fundacao','co-tel','co-email','co-contato',
+      'ca-cep','ca-logradouro','ca-num'],
+  3: ['rl-nome','rl-cpf','rl-rg','rl-orgao','rl-nasc','rl-civil',
+      'ra-cep','ra-logradouro','ra-num','rl-email','rl-tel',
+      'rl-assina-val','rl-usuario-val'],
+  4: ['rs-nome','rs-cpf','sa-cep','sa-logradouro','sa-num','rs-email','rs-tel'],
+  5: ['pl-tel','pl-email'],
+  6: ['bk-tipo-val','bk-fav','bk-doc','bk-banco','bk-ag','bk-conta'],
+  7: ['doc-cnpj','doc-contrato','doc-rl-frente','doc-rl-verso','doc-rl-res'],
+};
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function validateStep(step) {
+  const ids = REQUIRED[step] || [];
+  let firstErr = null;
+
+  /* Regra extra: se "Terá usuário = sim", campo gestor também é obrigatório */
+  const usuVal = document.getElementById('rl-usuario-val');
+  const extraIds = (step === 3 && usuVal && usuVal.value === 'sim') ? ['rl-gestor-val'] : [];
+  const allIds = [...ids, ...extraIds];
+
+  allIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || el.disabled) return;
+
+    let empty = false;
+    let errEl = el;
+
+    if (el.type === 'file') {
+      empty = !el.files || el.files.length === 0;
+      const lbl = document.getElementById('lbl-' + id);
+      if (lbl) errEl = lbl;
+    } else {
+      empty = !el.value.trim();
+    }
+
+    if (empty) {
+      errEl.classList.add('err');
+      errEl.style.animation = 'none';
+      errEl.offsetHeight;
+      errEl.style.animation = '';
+      if (!firstErr) firstErr = errEl;
+    } else {
+      errEl.classList.remove('err');
+    }
+  });
+
+  if (firstErr) {
+    firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (firstErr.tagName === 'INPUT') firstErr.focus();
+    showToast('Preencha todos os campos obrigatórios.');
+    return false;
+  }
+  return true;
+}
+
+/* limpa erro ao digitar / selecionar */
+document.addEventListener('input',  e => e.target.classList.remove('err'));
+document.addEventListener('change', e => {
+  e.target.classList.remove('err');
+  /* se for radio, limpa o hidden associado */
+  if (e.target.type === 'radio' && e.target.name) {
+    const hid = document.getElementById(e.target.name + '-val');
+    if (hid) hid.classList.remove('err');
+    /* limpa o estilo err dos label.radio-opt irmãos */
+    document.querySelectorAll(`input[name="${e.target.name}"]`).forEach(r => {
+      r.closest('.radio-opt') && r.closest('.radio-opt').classList.remove('err-radio');
+    });
+  }
+});
+
+/* ─── NAVIGATION ──────────────────────────────────────────── */
+function goTo(n) {
+  /* step-0 é overlay fixo gerenciado por startForm() */
+  if (current !== 0) {
+    document.getElementById(`step-${current}`).classList.remove('active');
+  }
+  document.getElementById(`step-${n}`).classList.add('active');
+  current = n;
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (n === 8) runSuccessTypewriter();
+}
+
+function advance(from) {
+  if (!validateStep(from)) return;
+  if (from === 7) { submitForm(); return; }
+  goTo(from + 1);
+}
+function back(from) { goTo(from > 1 ? from - 1 : 1); }
+
+/* ─── CONFIRMAÇÃO AO SAIR ─────────────────────────────────── */
+window.addEventListener('beforeunload', e => {
+  if (current > 0 && current < 8) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
+/* ─── PROGRESS ────────────────────────────────────────────── */
+function updateProgress() {
+  const wrap = document.getElementById('progressWrapper');
+  if (current === 0 || current === 8) {
+    wrap.classList.remove('show');
+    return;
+  }
+  wrap.classList.add('show');
+  const pct = (current / TOTAL) * 100;
+  document.getElementById('pFill').style.width = pct + '%';
+  document.getElementById('pLabel').textContent = LABELS[current] || '';
+  document.getElementById('pCount').textContent = `${current} de ${TOTAL}`;
+}
+
+/* ─── MASKS ───────────────────────────────────────────────── */
+function maskDate(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 8);
+  if (v.length >= 5) v = v.slice(0,2)+'/'+v.slice(2,4)+'/'+v.slice(4);
+  else if (v.length >= 3) v = v.slice(0,2)+'/'+v.slice(2);
+  el.value = v;
+}
+
+function maskTime(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 4);
+  if (v.length >= 3) v = v.slice(0,2)+':'+v.slice(2);
+  el.value = v;
+}
+
+function maskCPF(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 11);
+  if (v.length > 9) v = v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9);
+  else if (v.length > 6) v = v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6);
+  else if (v.length > 3) v = v.slice(0,3)+'.'+v.slice(3);
+  el.value = v;
+}
+
+function maskCNPJ(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 14);
+  if      (v.length > 12) v = v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8,12)+'-'+v.slice(12);
+  else if (v.length >  8) v = v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8);
+  else if (v.length >  5) v = v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5);
+  else if (v.length >  2) v = v.slice(0,2)+'.'+v.slice(2);
+  el.value = v;
+}
+
+function maskPhone(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 11);
+  if      (v.length === 11) v = '('+v.slice(0,2)+') '+v.slice(2,7)+'-'+v.slice(7);
+  else if (v.length  >= 7)  v = '('+v.slice(0,2)+') '+v.slice(2,6)+'-'+v.slice(6);
+  else if (v.length  >= 3)  v = '('+v.slice(0,2)+') '+v.slice(2);
+  else if (v.length  >= 1)  v = '('+v;
+  el.value = v;
+}
+
+function maskCEP(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 8);
+  if (v.length > 5) v = v.slice(0,5)+'-'+v.slice(5);
+  el.value = v;
+}
+
+function maskCPFCNPJ(el) {
+  const d = el.value.replace(/\D/g, '');
+  d.length <= 11 ? maskCPF(el) : maskCNPJ(el);
+}
+
+/* ─── CEP LOOKUP ──────────────────────────────────────────── */
+async function fetchCEP(p) {
+  const inp  = document.getElementById(`${p}-cep`);
+  const spin = document.getElementById(`${p}-spin`);
+  if (!inp) return;
+
+  const cep = inp.value.replace(/\D/g, '');
+  if (cep.length !== 8) return;
+
+  spin.classList.add('on');
+
+  try {
+    const r    = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const data = await r.json();
+
+    if (data.erro) { alert('CEP não encontrado. Verifique o número digitado.'); return; }
+
+    const map = {
+      [`${p}-logradouro`]: data.logradouro,
+      [`${p}-bairro`]:     data.bairro,
+      [`${p}-cidade`]:     data.localidade,
+      [`${p}-uf`]:         data.uf,
+    };
+
+    for (const [id, val] of Object.entries(map)) {
+      const el = document.getElementById(id);
+      if (el && val) { el.value = val; el.classList.add('filled'); }
+    }
+
+    const numEl = document.getElementById(`${p}-num`);
+    if (numEl && !numEl.disabled) numEl.focus();
+
+  } catch {
+    /* silently ignore network errors – user fills manually */
+  } finally {
+    spin.classList.remove('on');
+  }
+}
+
+/* ─── SEM NÚMERO ──────────────────────────────────────────── */
+function toggleSN(p) {
+  const cb  = document.getElementById(`${p}-sn`);
+  const num = document.getElementById(`${p}-num`);
+  if (!cb || !num) return;
+  if (cb.checked) {
+    num.value    = 'S/N';
+    num.disabled = true;
+  } else {
+    num.value    = '';
+    num.disabled = false;
+    num.focus();
+  }
+}
+
+/* ─── CIDADES POR UF (IBGE) ───────────────────────────────── */
+async function fetchCitiesByUF(uf) {
+  const sel = document.getElementById('ev-cidade');
+  if (!uf) {
+    sel.innerHTML = '<option value="">Selecione o UF primeiro</option>';
+    sel.disabled  = true;
+    return;
+  }
+  sel.innerHTML = '<option>Carregando cidades...</option>';
+  sel.disabled  = true;
+  try {
+    const r    = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`);
+    const data = await r.json();
+    data.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+    sel.innerHTML = '<option value="">Selecione a cidade</option>' +
+      data.map(c => `<option value="${c.nome}">${c.nome}</option>`).join('');
+    sel.disabled = false;
+  } catch {
+    sel.innerHTML = '<option value="">Erro — digite a cidade</option>';
+    sel.disabled  = false;
+  }
+}
+
+/* ─── HELPERS DE RADIO / FILE ────────────────────────────── */
+function setRadioVal(hiddenId, val) {
+  const el = document.getElementById(hiddenId);
+  if (el) { el.value = val; el.classList.remove('err'); }
+}
+
+function toggleGestor() {
+  const sel = document.querySelector('input[name="rl-usuario"]:checked');
+  const row = document.getElementById('gestor-row');
+  if (!row) return;
+  const show = sel && sel.value === 'sim';
+  row.style.display = show ? 'flex' : 'none';
+  if (!show) {
+    document.querySelectorAll('input[name="rl-gestor"]').forEach(r => r.checked = false);
+    const gv = document.getElementById('rl-gestor-val');
+    if (gv) gv.value = '';
+  }
+}
+
+function toggleSemProdutor(checked) {
+  const fields = document.getElementById('pl-fields');
+  if (!fields) return;
+  fields.style.display = checked ? 'none' : 'block';
+  ['pl-tel','pl-email'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.disabled = checked;
+      if (checked) { el.classList.remove('err'); }
+    }
+  });
+}
+
+
+function handleFile(input, lblId) {
+  const lbl = document.getElementById(lblId);
+  if (!lbl) return;
+  if (input.files && input.files.length > 0) {
+    lbl.classList.add('has-file');
+    lbl.classList.remove('err');
+    lbl.querySelector('.file-text').textContent = '✓ ' + input.files[0].name;
+  } else {
+    lbl.classList.remove('has-file');
+    lbl.querySelector('.file-text').textContent =
+      lbl.dataset.placeholder || 'Selecionar arquivo';
+  }
+}
+
+/* ─── MESMO ENDEREÇO DO CONTRATANTE ──────────────────────── */
+const ADDR_FIELDS = ['cep','logradouro','num','comp','bairro','cidade','uf'];
+
+
+/* ─── FIREBASE ────────────────────────────────────────────── */
+firebase.initializeApp(FIREBASE_CONFIG);
+const db      = firebase.firestore();
+const storage = firebase.storage();
+
+function getVal(id) {
+  const el = document.getElementById(id);
+  return el ? (el.value || '').trim() : '';
+}
+
+/* Remove undefined recursivamente (Firestore não aceita undefined) */
+function cleanObj(obj) {
+  return JSON.parse(JSON.stringify(obj, (_, v) => (v === undefined ? null : v)));
+}
+
+function addrData(p) {
+  return {
+    cep:         getVal(`${p}-cep`),
+    logradouro:  getVal(`${p}-logradouro`),
+    numero:      getVal(`${p}-num`),
+    complemento: getVal(`${p}-comp`),
+    bairro:      getVal(`${p}-bairro`),
+    cidade:      getVal(`${p}-cidade`),
+    uf:          getVal(`${p}-uf`),
+  };
+}
+
+function collectFormData() {
+  return cleanObj({
+    evento: {
+      nome:           getVal('ev-nome'),
+      data:           getVal('ev-data'),
+      aberturaVendas: getVal('ev-vendas'),
+      horario:        getVal('ev-horario'),
+      local:          getVal('ev-local'),
+      uf:             getVal('ev-uf'),
+      cidade:         getVal('ev-cidade'),
+      endereco:       addrData('ea'),
+    },
+    contratante: {
+      razaoSocial:   getVal('co-razao'),
+      nomeFantasia:  getVal('co-fantasia'),
+      cnpj:          getVal('co-cnpj'),
+      ie:            getVal('co-ie'),
+      im:            getVal('co-im'),
+      dataFundacao:  getVal('co-fundacao'),
+      telefone:      getVal('co-tel'),
+      celular:       getVal('co-cel'),
+      email:         getVal('co-email'),
+      pessoaContato: getVal('co-contato'),
+      funcao:        getVal('co-funcao'),
+      endereco:      addrData('ca'),
+    },
+    representante: {
+      nome:           getVal('rl-nome'),
+      cpf:            getVal('rl-cpf'),
+      rg:             getVal('rl-rg'),
+      orgaoExpedidor: getVal('rl-orgao'),
+      dataNascimento: getVal('rl-nasc'),
+      estadoCivil:    getVal('rl-civil'),
+      email:          getVal('rl-email'),
+      telefone:       getVal('rl-tel'),
+      celular:        getVal('rl-cel'),
+      assina:         getVal('rl-assina-val'),
+      usuario:        getVal('rl-usuario-val'),
+      gestor:         getVal('rl-gestor-val'),
+      endereco:       addrData('ra'),
+    },
+    solidario: {
+      nome:     getVal('rs-nome'),
+      cpf:      getVal('rs-cpf'),
+      email:    getVal('rs-email'),
+      telefone: getVal('rs-tel'),
+      endereco: addrData('sa'),
+    },
+    produtorLocal: {
+      semProdutor: document.getElementById('pl-nenhum')?.checked || false,
+      telefone:    getVal('pl-tel'),
+      email:       getVal('pl-email'),
+    },
+    bancario: {
+      tipoConta:  getVal('bk-tipo-val'),
+      favorecido: getVal('bk-fav'),
+      documento:  getVal('bk-doc'),
+      banco:      getVal('bk-banco'),
+      agencia:    getVal('bk-ag'),
+      conta:      getVal('bk-conta'),
+      pix:        getVal('bk-pix'),
+    },
+    documentos:  {},
+    status:      'pendente',
+    criadoEm:    firebase.firestore.FieldValue.serverTimestamp(),
+  });
+}
+
+async function uploadFiles(docId) {
+  const uploads = [
+    { id: 'doc-cnpj',      key: 'cnpj'          },
+    { id: 'doc-contrato',  key: 'contrato'       },
+    { id: 'doc-ie',        key: 'ie'             },
+    { id: 'doc-rl-frente', key: 'rl_frente'      },
+    { id: 'doc-rl-verso',  key: 'rl_verso'       },
+    { id: 'doc-rl-res',    key: 'rl_residencia'  },
+  ];
+  const urls = {};
+  for (const { id, key } of uploads) {
+    const inp = document.getElementById(id);
+    if (!inp?.files?.length) continue;
+    const file = inp.files[0];
+    const ext  = file.name.split('.').pop();
+    const ref  = storage.ref(`formularios/${docId}/${key}.${ext}`);
+    const snap = await ref.put(file);
+    urls[key]  = await snap.ref.getDownloadURL();
+  }
+  return urls;
+}
+
+async function submitForm() {
+  const btn     = document.querySelector('#step-7 .btn-primary');
+  const origBtn = btn.innerHTML;
+  btn.disabled  = true;
+  btn.innerHTML = `<svg style="animation:spinRound .65s linear infinite;flex-shrink:0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Enviando...`;
+
+  try {
+    const docRef  = db.collection('formularios').doc();
+    const docUrls = await uploadFiles(docRef.id);
+    const data    = collectFormData();
+    data.documentos = docUrls;
+    await docRef.set(data);
+    goTo(8);
+  } catch (err) {
+    console.error('Erro ao enviar:', err);
+    showToast('Erro ao enviar. Verifique sua conexão e tente novamente.');
+    btn.disabled  = false;
+    btn.innerHTML = origBtn;
+  }
+}
+
+/* ─── INIT ────────────────────────────────────────────────── */
+updateProgress();
+runTypewriter();
+</script>
+</body>
+</html>
