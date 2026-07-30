@@ -187,18 +187,6 @@
     .dash-title { font-size: 21px; font-weight: 700; letter-spacing: -.2px; }
     .dash-sub   { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
 
-    .count-bar {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 13px; color: var(--text-muted);
-      margin-bottom: 16px;
-    }
-    .count-badge {
-      display: inline-flex; align-items: center; justify-content: center;
-      min-width: 26px; height: 22px; padding: 0 8px;
-      background: var(--brand); color: #fff;
-      border-radius: 99px; font-size: 12px; font-weight: 700;
-    }
-
     /* ─── SUBMISSION CARD ────────────────────────────────────── */
     .sub-card {
       background: var(--card);
@@ -372,10 +360,6 @@
       </div>
     </div>
 
-    <div class="count-bar">
-      <span class="count-badge" id="form-count">0</span>
-      <span id="count-label">formulários</span>
-    </div>
 
     <div id="forms-loading" class="loading-state">
       <div class="load-spin"></div>
@@ -512,11 +496,6 @@
   /* ── Render list ───────────────────────────────────────────── */
   function renderList(docs) {
     const list  = document.getElementById('forms-list');
-    const count = document.getElementById('form-count');
-    const label = document.getElementById('count-label');
-
-    count.textContent = docs.length;
-    label.textContent = docs.length === 1 ? 'formulário' : 'formulários';
 
     if (!docs.length) {
       list.innerHTML = '<div class="empty-state">Nenhum formulário enviado ainda.</div>';
