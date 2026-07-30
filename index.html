@@ -115,13 +115,21 @@
       position: fixed !important;
       inset: 0;
       z-index: 300;
-      background: var(--brand) url('marcadagua.png') center center / cover no-repeat;
+      background: var(--brand);
       display: flex !important;
       align-items: center;
       justify-content: center;
       animation: none !important;
       transition: transform .65s cubic-bezier(.77,0,.175,1);
       overflow: hidden;
+    }
+    #step-0::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('marcadagua.png') center center / cover no-repeat;
+      pointer-events: none;
+      z-index: 0;
     }
     #step-0.slide-away {
       transform: translateX(-100%);
@@ -135,6 +143,8 @@
       display: flex;
       flex-direction: column;
       gap: 0;
+      position: relative;
+      z-index: 1;
     }
 
     .intro-heading {
@@ -641,12 +651,20 @@
       position: fixed !important;
       inset: 0;
       z-index: 300;
-      background: var(--brand) url('marcadagua.png') center center / cover no-repeat;
+      background: var(--brand);
       display: flex !important;
       align-items: center;
       justify-content: center;
       animation: slideFromRight .65s cubic-bezier(.77,0,.175,1) forwards !important;
       overflow: hidden;
+    }
+    #step-8.active::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('marcadagua.png') center center / cover no-repeat;
+      pointer-events: none;
+      z-index: 0;
     }
     @keyframes slideFromRight {
       from { transform: translateX(100%); }
