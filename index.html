@@ -1164,11 +1164,15 @@
         <div class="card-label">Contatos</div>
         <div class="row">
           <div class="fg f1">
-            <label>Telefone <span class="req">*</span></label>
-            <input type="text" id="pl-tel" placeholder="(00) 00000-0000" maxlength="15" oninput="maskPhone(this)">
+            <label>Nome <span class="req">*</span></label>
+            <input type="text" id="pl-nome" placeholder="Nome completo do produtor local">
           </div>
         </div>
         <div class="row">
+          <div class="fg f1">
+            <label>Telefone <span class="req">*</span></label>
+            <input type="text" id="pl-tel" placeholder="(00) 00000-0000" maxlength="15" oninput="maskPhone(this)">
+          </div>
           <div class="fg f1">
             <label>E-mail <span class="req">*</span></label>
             <input type="email" id="pl-email" placeholder="email@exemplo.com">
@@ -1612,7 +1616,7 @@ const REQUIRED = {
       'ra-cep','ra-logradouro','ra-num','rl-email','rl-tel',
       'rl-assina-val','rl-usuario-val'],
   4: ['rs-nome','rs-cpf','sa-cep','sa-logradouro','sa-num','rs-email','rs-tel'],
-  5: ['pl-tel','pl-email'],
+  5: ['pl-nome','pl-tel','pl-email'],
   6: ['bk-tipo-val','bk-fav','bk-doc','bk-banco','bk-ag','bk-conta'],
   7: ['doc-cnpj','doc-contrato','doc-rl-frente','doc-rl-verso','doc-rl-res'],
 };
@@ -1904,7 +1908,7 @@ function toggleSemProdutor(checked) {
   const fields = document.getElementById('pl-fields');
   if (!fields) return;
   fields.style.display = checked ? 'none' : 'block';
-  ['pl-tel','pl-email'].forEach(id => {
+  ['pl-nome','pl-tel','pl-email'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       el.disabled = checked;
@@ -2028,6 +2032,7 @@ function collectFormData() {
     },
     produtorLocal: {
       semProdutor: document.getElementById('pl-nenhum')?.checked || false,
+      nome:        getVal('pl-nome'),
       telefone:    getVal('pl-tel'),
       email:       getVal('pl-email'),
     },
