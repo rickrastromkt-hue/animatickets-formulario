@@ -1543,7 +1543,7 @@ async function runTypewriter() {
   const sub = document.getElementById('intro-sub');
   await typeText(h1, 'Olá, produtor!', 65);
   await new Promise(r => setTimeout(r, 280));
-  await typeText(sub, 'Preencha o formulário para darmos andamento ao contrato.', 22);
+  await typeText(sub, 'Escolha uma opção abaixo para continuar:', 28);
   await new Promise(r => setTimeout(r, 300));
   document.getElementById('btn-iniciar').classList.add('show');
   document.getElementById('btn-orcamento').classList.add('show');
